@@ -39,15 +39,15 @@ class AppComponent {
   bool hidecustom = true;
   bool hidesb = true;
   String tier = "";
-  bool openLogIn = true;
+  //bool openLogIn = true;
   bool openEmail = false;
   String failedText = "";
-  String customerEmail = "";
+  //String customerEmail = "";
   List<Map> orderList;
   List<Ring> tierRings = [];
   int selectedPage = 0;
   bool hideMenuIcon = true;
-  bool viewPrintDialog = false;
+//  bool viewPrintDialog = false;
   final int tier1 = 4104;
   final int tier2 = 7291;
   final int tier3 = 10490;
@@ -82,9 +82,25 @@ class AppComponent {
   StringBuffer sb = new StringBuffer();
   bool dataAvailable = false;
   bool showOrder = false;
+  bool loggedIn = false;
+  String pin = "";
+  String email = "";
+  String email_0 = "";
+  String email_1 = "";
+  String email_2 = "";
+  String email_3 = "";
+  String email_4 = "";
+  String email_5 = "";
+  String email_6 = "";
+  String email_7 = "";
+  String email_8 = "";
+  String email_9 = "";
+  String emailSuccess = "";
 
   AppComponent() {
-    HttpRequest.getString(pathToPhpLoad).then(onPHPDataLoaded);
+
+    //HttpRequest.getString(pathToPhpLoad).then(onPHPDataLoaded);
+    HttpRequest.getString(pathToLogin).then(loginLoaded);
   }
 
   void onPHPDataLoaded(String responseText) {
@@ -139,13 +155,14 @@ class AppComponent {
     return false;
   }
 
-  void loginLoaded(Event event, var detail, Element target) {
-    mapListLogin = detail['response'];
+  void loginLoaded(data) {
+    mapListLogin = JSON.decode(data);
     loginData =
         mapListLogin.map((Map element) => new User.fromMap(element)).toList();
 
     loginList = loginData.toList();
-    loadOrders();
+    querySelector('#pin-input').focus();
+
   }
 
   void loadOrders() {
@@ -153,12 +170,12 @@ class AppComponent {
   }
 
 
-  void handleKeyEventEmail(KeyboardEvent event) {
-    KeyEvent keyEvent = new KeyEvent.wrap(event);
-    if (keyEvent.keyCode == KeyCode.ENTER) {
-      emailOrder();
-    }
-  }
+//  void handleKeyEventEmail(KeyboardEvent event) {
+//    KeyEvent keyEvent = new KeyEvent.wrap(event);
+//    if (keyEvent.keyCode == KeyCode.ENTER) {
+//      emailOrder();
+//    }
+//  }
 
   void addEmail() {
     if (currentHidden < 10) {
@@ -181,6 +198,8 @@ class AppComponent {
       //print('response: ${val.responseText}');
       currentOrder = JSON.decode(val.responseText);
       print(currentOrder);
+
+      email = currentOrder['customer'][0]['email'];
       //tierRings = currentOrder['tierRings'].map((Map element) => new Ring.fromMap(element)).toList();
       //var sig = currentOrder['signature'];
 
@@ -233,8 +252,6 @@ class AppComponent {
       hideSignIt = true;
 
 
-      customerEmail = currentOrder['customer'][0]['email'];
-
       if (unhide(added)) {
         hideadded = false;
       } else {
@@ -266,49 +283,39 @@ class AppComponent {
 
   void emailOrder() {
     var idxtosend = currentOrder['master'][0]['order_idx'];
-    var email = querySelector('email'),
-    email0 = querySelector('email0'),
-    email1 = querySelector('email1'),
-    email2 = querySelector('email2'),
-    email3 = querySelector('email3'),
-    email4 = querySelector('email4'),
-    email5 = querySelector('email5'),
-    email6 = querySelector('email6'),
-    email7 = querySelector('email7'),
-    email8 = querySelector('email8'),
-    email9 = querySelector('email9');
 
-    List emailsToSend = [email.value];
 
-    if (email0.value != "") {
-      emailsToSend.add(email0.value);
+    List emailsToSend = [email];
+
+    if (email_0 != "") {
+      emailsToSend.add(email_0);
     }
-    if (email1.value != "") {
-      emailsToSend.add(email1.value);
+    if (email_1 != "") {
+      emailsToSend.add(email_1);
     }
-    if (email2.value != "") {
-      emailsToSend.add(email2.value);
+    if (email_2 != "") {
+      emailsToSend.add(email_2);
     }
-    if (email3.value != "") {
-      emailsToSend.add(email3.value);
+    if (email_3 != "") {
+      emailsToSend.add(email_3);
     }
-    if (email4.value != "") {
-      emailsToSend.add(email4.value);
+    if (email_4 != "") {
+      emailsToSend.add(email_4);
     }
-    if (email5.value != "") {
-      emailsToSend.add(email5.value);
+    if (email_5 != "") {
+      emailsToSend.add(email_5);
     }
-    if (email6.value != "") {
-      emailsToSend.add(email6.value);
+    if (email_6 != "") {
+      emailsToSend.add(email_6);
     }
-    if (email7.value != "") {
-      emailsToSend.add(email7.value);
+    if (email_7 != "") {
+      emailsToSend.add(email_7);
     }
-    if (email8.value != "") {
-      emailsToSend.add(email8.value);
+    if (email_8 != "") {
+      emailsToSend.add(email_8);
     }
-    if (email9.value != "") {
-      emailsToSend.add(email9.value);
+    if (email_9 != "") {
+      emailsToSend.add(email_9);
     }
 
     var dataToSend = {
@@ -317,12 +324,13 @@ class AppComponent {
     };
 
     var data = JSON.encode(dataToSend);
+    print(data);
     HttpRequest.request(pathToEmail, method: 'POST',
         mimeType: 'application/json',
         sendData: data).catchError((obj) {
-
     }).then((HttpRequest val) {
-      openEmail = false;
+      print("email success");
+      emailSuccess = "Email sent!";
     }, onError: (e) => print("error"));
   }
 
@@ -340,8 +348,6 @@ class AppComponent {
 
   void deleteOrder() {
     orderDeleteData = currentOrder['master'][0]['order_idx'];
-    ;
-
     viewDeleteOrder = true;
   }
 
@@ -393,13 +399,13 @@ class AppComponent {
 
   void printOrderWith() {
     images = true;
-    viewPrintDialog = false;
+//    viewPrintDialog = false;
     //createPrint();
   }
 
   void printOrderWithout() {
     images = false;
-    viewPrintDialog = false;
+//    viewPrintDialog = false;
     //createPrint();
   }
 
@@ -598,21 +604,17 @@ class AppComponent {
       window.alert("You must select an order to print");
       return;
     }
-    viewPrintDialog = true;
+    //viewPrintDialog = true;
   }
 
   void cancelPrint() {
-    viewPrintDialog = false;
+    //viewPrintDialog = false;
   }
 
   void newTab(tab) {
     selectedPage = tab;
     if (tab == 3) {
-      viewPrintDialog = true;
-    }
-    if (tab == 5) {
-      openEmail = true;
-      selectedPage = 1;
+      //viewPrintDialog = true;
     }
     if (tab == 5) {
       deleteOrder();
@@ -670,56 +672,32 @@ class AppComponent {
 
   void checkPinInput() {
     //print($['pin'].value);
-    var pin = querySelector('pin');
-    String temp = pin.value;
-    int length = temp.length;
+/*    String temp = pin.value;
+    int length = temp.length*/;
     //print(length);
     try {
-      checkPin = [temp[0], temp[1], temp[2], temp[3]];
+      checkPin = [pin[0], pin[1], pin[2], pin[3]];
     } catch (exception, stackTrace) {
       return;
     }
     for (User p in loginData) {
       if (checkPin.toString() == p.pin.toString()) {
-        unlockApp();
+        logIn();
       }
     }
   }
 
-  void unlockApp() {
-    openLogIn = false;
+  void logIn() {
+    loggedIn = true;
+    loadOrders();
   }
 
   void toggleImages() {
     images = !images;
   }
 
-  void numpadAction(Event event, var detail, Element target) {
-    int tempnum = int.parse(target.dataset["num"]);
-
-    if (checkPin.length < 4) {
-      checkPin.add(tempnum);
-      pin1 = "*";
-      if (checkPin.length == 2) {
-        pin2 = "*";
-      }
-      if (checkPin.length == 3) {
-        pin3 = "*";
-      }
-      if (checkPin.length == 4) {
-        pin4 = "*";
-        for (User p in loginData) {
-          if (checkPin.toString() == p.pin.toString()) {
-            unlockApp();
-          }
-        }
-        failedText = "Failed. Incorrect code. Please try again.";
-        checkPin.clear();
-        pin1 = "";
-        pin2 = "";
-        pin3 = "";
-        pin4 = "";
-      }
-    }
+  void numpadAction(String data) {
+    pin = pin + data;
+    checkPinInput();
   }
 }

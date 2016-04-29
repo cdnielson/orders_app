@@ -99,188 +99,251 @@
         z-index: 10000;
         padding: 20px;
     }
+    .button {
+        height: 50px;
+    }
 </style>
-<!--menu-->
-<div class="layout horizontal" *ngIf="dataAvailable">
-    <div id="menu" style="overflow: scroll;">
-        <p style="font-weight: bold; border-bottom: 1px solid black;">Order # | Name</p>
-        <div *ngFor="#showOrder of showOrders">
-            <div (click)="orderClicked(showOrder.order_idx)" class="orderMenu">{{showOrder.order_idx}} |
-                {{showOrder.order_name}} | ({{showOrder.rep}}
-            </div>
+
+<div [ngSwitch]="loggedIn">
+    <div *ngSwitchWhen="false" class="layout vertical center" style="width:100%; background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
+        <h1>Log In</h1>
+        <h3 style="margin-bottom: 3px;">Please enter your access code</h3>
+        <div class="horizontal layout center-justified" style="width:100%; margin-bottom: 20px;">
+            <input id="pin-input" (keyup)="checkPinInput()" [(ngModel)]="pin" style="font-size: x-large; text-align: center;" type="password">
+        </div>
+        <div class="horizontal layout center-justified" style="width: 100%; color: red;">
+            {{failedText}}
+        </div>
+        <div class="horizontal layout wrap center-justified" style="width:100%;">
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('7')"><h1>7</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('8')"><h1>8</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('9')"><h1>9</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('4')"><h1>4</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('5')"><h1>5</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('6')"><h1>6</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('1')"><h1>1</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('2')"><h1>2</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('3')"><h1>3</h1></button>
+            <button style="width:30%; height:95px; border-radius: 20px; margin: 1%; background: transparent; border: none; color: #ddc77c;" (click)="numpadAction('0')"><h1>0</h1></button>
         </div>
     </div>
-    <!--header-->
-    <div class="layout vertical">
-        <div class="layout horizontal center justified">
-            <button (click)="newTab(1)" flex><h3>View Order</h3></button>
-            <button (click)="newTab(2)" flex><h3>View Order Images</h3></button>
-            <button (click)="newTab(3)" flex><h3>Print Order</h3></button>
-            <button (click)="newTab(4)" flex><h3>Email Order</h3></button>
-            <button (click)="newTab(5)"><h3>X</h3></button>
-            <button><a style="text-decoration: none; color: #ddc77c;"
-                       href="http://www.lashbrookdesigns.com/sales">Place A New Order</a></button>
-        </div>
 
-        <div id="content" [ngSwitch]="selectedPage">
-            <div *ngSwitchWhen="0">
-                    <div>Select the Order you want to display</div>
+
+    <div *ngSwitchWhen="true">
+
+        <!--menu-->
+        <div class="layout horizontal" *ngIf="dataAvailable">
+            <div id="menu" style="overflow: scroll;">
+                <p style="font-weight: bold; border-bottom: 1px solid black;">Order # | Name</p>
+                <div *ngFor="#showOrder of showOrders">
+                    <div (click)="orderClicked(showOrder.order_idx)" class="orderMenu">{{showOrder.order_idx}} |
+                        {{showOrder.order_name}} | ({{showOrder.rep}}
+                    </div>
+                </div>
             </div>
-            <div *ngSwitchWhen="1">
-                <!--order-->
-                <div id="order" vertical layout>
-                    <div>
-                        <div class="field">Order #: {{currentOrder['master'][0]['order_idx']}}</div>
-                        <div class="field">Date: {{currentOrder['master'][0]['date']}}</div>
-                        <div class="field">Store Name: {{currentOrder['customer'][0]['storeName']}}</div>
-                        <div class="field">First Name: {{currentOrder['customer'][0]['firstName']}}</div>
-                        <div class="field">Last Name: {{currentOrder['customer'][0]['lastName']}}</div>
-                        <div class="field">Address: {{currentOrder['customer'][0]['address']}}</div>
-                        <div class="field">City: {{currentOrder['customer'][0]['city']}}</div>
-                        <div class="field">State: {{currentOrder['customer'][0]['state']}}</div>
-                        <div class="field">Phone: {{currentOrder['customer'][0]['phone']}}</div>
-                        <div class="field">E-mail: {{currentOrder['customer'][0]['email']}}</div>
-                        <div class="field">Terms: {{currentOrder['data'][0]['terms']}}</div>
-                        <div class="field">Notes: {{currentOrder['data'][0]['notes']}}</div>
-                        <div class="field">Sales Rep: {{currentOrder['master'][0]['rep']}}</div>
-                        <div class="field">Tier: {{tier}}</div>
+            <!--header-->
+            <div class="layout vertical">
+                <div class="layout horizontal start-justified">
+                    <button style="height: 55px;" (click)="newTab(1)"><h3>View Order</h3></button>
+                    <button style="height: 55px;" (click)="newTab(2)"><h3>View Order Images</h3></button>
+                    <button style="height: 55px;" (click)="newTab(3)"><h3>Print Order</h3></button>
+                    <button style="height: 55px;" (click)="newTab(4)"><h3>Email Order</h3></button>
+                    <!--<button (click)="newTab(5)"><h3>X</h3></button>-->
+                    <button style="height: 55px;">
+                        <a style="text-decoration: none;" href="http://www.lashbrookdesigns.com/sales2">
+                            <h3>Place A New Order</h3>
+                        </a>
+                    </button>
+                </div>
 
-                        <div [hidden]="hideadded" class="field smallheader">ADDED ITEMS</div>
-                        <div [hidden]="hideadded">
-                            <div *ngFor="#add of added">
+                <div id="content" [ngSwitch]="selectedPage">
+                    <div *ngSwitchWhen="0">
+                            <div>Select the Order you want to display</div>
+                    </div>
+                    <div *ngSwitchWhen="1">
+                        <!--order-->
+                        <div id="order" vertical layout>
+                            <div>
+                                <div class="field">Order #: {{currentOrder['master'][0]['order_idx']}}</div>
+                                <div class="field">Date: {{currentOrder['master'][0]['date']}}</div>
+                                <div class="field">Store Name: {{currentOrder['customer'][0]['storeName']}}</div>
+                                <div class="field">First Name: {{currentOrder['customer'][0]['firstName']}}</div>
+                                <div class="field">Last Name: {{currentOrder['customer'][0]['lastName']}}</div>
+                                <div class="field">Address: {{currentOrder['customer'][0]['address']}}</div>
+                                <div class="field">City: {{currentOrder['customer'][0]['city']}}</div>
+                                <div class="field">State: {{currentOrder['customer'][0]['state']}}</div>
+                                <div class="field">Phone: {{currentOrder['customer'][0]['phone']}}</div>
+                                <div class="field">E-mail: {{currentOrder['customer'][0]['email']}}</div>
+                                <div class="field">Terms: {{currentOrder['data'][0]['terms']}}</div>
+                                <div class="field">Notes: {{currentOrder['data'][0]['notes']}}</div>
+                                <div class="field">Sales Rep: {{currentOrder['master'][0]['rep']}}</div>
+                                <div class="field">Tier: {{tier}}</div>
+
+                                <div [hidden]="hideadded" class="field smallheader">ADDED ITEMS</div>
+                                <div [hidden]="hideadded">
+                                    <div *ngFor="#add of added">
+                                        <div class="field" horizontal layout>
+                                            <div flex>{{add['sku']}} - {{add['finish']}} - {{add['notes']}}</div>
+                                            <div class="subfield">${{add['price']}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div [hidden]="hideremoved" class="field smallheader">REMOVED ITEMS FROM TIER</div>
+                                <div *ngFor="#remove of removed">
+                                    <div class="field" horizontal layout>
+                                        <div flex>{{remove['sku']}} - {{remove['finish']}}</div>
+                                        <div class="subfield">${{remove['price']}}</div>
+                                    </div>
+                                </div>
+                                <div [hidden]="hideaccessories" class="field smallheader">ADDED ACCESSORIES</div>
+                                <div *ngFor="#accessory of accessories">
+                                    <div class="field" horizontal layout>
+                                        <div flex>{{accessory['sku']}} - {{accessory['finish']}} - {{accessory['notes']}}</div>
+                                        <div class="subfield">${{accessory['price']}}</div>
+                                    </div>
+                                </div>
+                                <div [hidden]="hidecustomdisplay">
+                                    <div class="field smallheader">Custom Display Colors</div>
+                                    <div class="field" horizontal layout>
+                                        <div flex>Acrylic Top: {{acrylic}}</div>
+                                    </div>
+                                    <div class="field" horizontal layout>
+                                        <div flex>Top: {{top}}</div>
+                                    </div>
+                                    <div class="field" horizontal layout>
+                                        <div flex>Side: {{side}}</div>
+                                    </div>
+                                </div>
+                                <div [hidden]="hidecustom" class="field smallheader">CUSTOM SKUS</div>
+                                <div *ngFor="#customsku of customskus">
+                                    <div class="field" horizontal layout>
+                                        <div flex>{{customsku['sku']}} - {{customsku['finish']}}</div>
+                                        <div class="subfield">${{customsku['price']}}</div>
+                                    </div>
+                                </div>
+                                <div [hidden]="hidesb" class="field smallheader">STOCK BALANCE</div>
+                                <template *ngFor="#stockbalance of stockbalances">
+                                    <div class="field" horizontal layout>
+                                        <div flex>{{stockbalance['id']}}</div>
+                                        <div class="subfield">${{stockbalance['price']}}</div>
+                                    </div>
+                                </template>
                                 <div class="field" horizontal layout>
-                                    <div flex>{{add['sku']}} - {{add['finish']}} - {{add['notes']}}</div>
-                                    <div class="subfield">${{add['price']}}</div>
+                                    <div flex class="smallheader">Subtotal:</div>
+                                    <div class="subfield">${{subTotalCost}}</div>
+                                </div>
+                                <div class="field" horizontal layout>
+                                    <div flex>Shipping:</div>
+                                    <div class="subfield">${{shipping}}</div>
+                                </div>
+                                <div class="field" horizontal layout>
+                                    <div flex class="smallheader">Total:</div>
+                                    <div class="subfield">${{totalCost}}</div>
                                 </div>
                             </div>
                         </div>
-                        <div [hidden]="hideremoved" class="field smallheader">REMOVED ITEMS FROM TIER</div>
-                        <div *ngFor="#remove of removed">
-                            <div class="field" horizontal layout>
-                                <div flex>{{remove['sku']}} - {{remove['finish']}}</div>
-                                <div class="subfield">${{remove['price']}}</div>
-                            </div>
+
+
+                        <div style="color: white;" [hidden]="hideIncomplete"><h2>INCOMPLETE ORDER</h2>
+                            <button [hidden]="hideIncomplete" (click)="signOrder()">Sign for this order</button>
                         </div>
-                        <div [hidden]="hideaccessories" class="field smallheader">ADDED ACCESSORIES</div>
-                        <div *ngFor="#accessory of accessories">
-                            <div class="field" horizontal layout>
-                                <div flex>{{accessory['sku']}} - {{accessory['finish']}} - {{accessory['notes']}}</div>
-                                <div class="subfield">${{accessory['price']}}</div>
-                            </div>
-                        </div>
-                        <div [hidden]="hidecustomdisplay">
-                            <div class="field smallheader">Custom Display Colors</div>
-                            <div class="field" horizontal layout>
-                                <div flex>Acrylic Top: {{acrylic}}</div>
-                            </div>
-                            <div class="field" horizontal layout>
-                                <div flex>Top: {{top}}</div>
-                            </div>
-                            <div class="field" horizontal layout>
-                                <div flex>Side: {{side}}</div>
-                            </div>
-                        </div>
-                        <div [hidden]="hidecustom" class="field smallheader">CUSTOM SKUS</div>
-                        <div *ngFor="#customsku of customskus">
-                            <div class="field" horizontal layout>
-                                <div flex>{{customsku['sku']}} - {{customsku['finish']}}</div>
-                                <div class="subfield">${{customsku['price']}}</div>
-                            </div>
-                        </div>
-                        <div [hidden]="hidesb" class="field smallheader">STOCK BALANCE</div>
-                        <template *ngFor="#stockbalance of stockbalances">
-                            <div class="field" horizontal layout>
-                                <div flex>{{stockbalance['id']}}</div>
-                                <div class="subfield">${{stockbalance['price']}}</div>
-                            </div>
-                        </template>
-                        <div class="field" horizontal layout>
-                            <div flex class="smallheader">Subtotal:</div>
-                            <div class="subfield">${{subTotalCost}}</div>
-                        </div>
-                        <div class="field" horizontal layout>
-                            <div flex>Shipping:</div>
-                            <div class="subfield">${{shipping}}</div>
-                        </div>
-                        <div class="field" horizontal layout>
-                            <div flex class="smallheader">Total:</div>
-                            <div class="subfield">${{totalCost}}</div>
-                        </div>
+                        <!--
+                        <iframe [hidden]="hideSignature" class="signaturecontainer" [src]="pathToSignature + '?id=' + idx"
+                                seamless="true" height="300px" width="87%"></iframe>
+                        <iframe [hidden]="hideSignIt" class="signaturecontainer" [src]="pathToSignOrder + '?id=' + idxToSend"
+                                seamless="true" height="300px" width="87%"></iframe>-->
                     </div>
-                </div>
+                    <div id="1_images" *ngSwitchWhen="2">
+                        <div class="box-container">
+                            <!--                      <paper-button raised label="Email Order" on-click="{{getEmail}}"></paper-button>
+                                                  <paper-button raised label="Print Order with Images" on-click="{{printOrderWith}}"></paper-button>-->
+                            <div class="horizontal layout wrap center-justified" style="width: 100%;">
 
+                                <!--<template repeat="{{tierRing in tierRings}}">
+                                    <p>
+                                        <img _src="{{pathToImages}}{{tierRing.image}}"/>
+                                        <br>{{tierRing.sku}} - {{tierRing.finish}}
+                                        <br>${{tierRing.price}}
+                                    </p>
+                                </template>-->
 
-                <div style="color: white;" [hidden]="hideIncomplete"><h2>INCOMPLETE ORDER</h2>
-                    <button [hidden]="hideIncomplete" (click)="signOrder()">Sign for this order</button>
-                </div>
-                <!--
-                <iframe [hidden]="hideSignature" class="signaturecontainer" [src]="pathToSignature + '?id=' + idx"
-                        seamless="true" height="300px" width="87%"></iframe>
-                <iframe [hidden]="hideSignIt" class="signaturecontainer" [src]="pathToSignOrder + '?id=' + idxToSend"
-                        seamless="true" height="300px" width="87%"></iframe>-->
-            </div>
-            <div id="1_images" *ngSwitchWhen="2">
-                <div class="box-container">
-                    <!--                      <paper-button raised label="Email Order" on-click="{{getEmail}}"></paper-button>
-                                          <paper-button raised label="Print Order with Images" on-click="{{printOrderWith}}"></paper-button>-->
-                    <div  horizontal layout wrap center-justified style="width: 100%;">
-
-                        <!--<template repeat="{{tierRing in tierRings}}">
-                            <p>
-                                <img _src="{{pathToImages}}{{tierRing.image}}"/>
-                                <br>{{tierRing.sku}} - {{tierRing.finish}}
-                                <br>${{tierRing.price}}
-                            </p>
-                        </template>-->
-
-                        <div *ngFor="#add of added">
-                            <div style="background: white; width: 150px; word-wrap: break-word;">
-                                <img [src]="pathToImages + add['image']"/>
-                                <br>{{add['sku']}} - {{add['finish']}}
-                                <br>${{add['price']}}
-                            </div>
-                        </div>
-                        <div *ngFor="#accessory of accessories">
-                            <div style="background: white; width: 150px; word-wrap: break-word;">
-                                <img [src]="pathToImages + accessory['image']"/>
-                                <br>{{accessory['sku']}} - {{accessory['finish']}}
-                                <br>${{accessory['price']}}
+                                <div *ngFor="#add of added">
+                                    <div style="background: white; width: 150px; word-wrap: break-word;">
+                                        <img [src]="pathToImages + add['image']"/>
+                                        <br>{{add['sku']}} - {{add['finish']}}
+                                        <br>${{add['price']}}
+                                    </div>
+                                </div>
+                                <div *ngFor="#accessory of accessories">
+                                    <div style="background: white; width: 150px; word-wrap: break-word;">
+                                        <img [src]="pathToImages + accessory['image']"/>
+                                        <br>{{accessory['sku']}} - {{accessory['finish']}}
+                                        <br>${{accessory['price']}}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div id="2_print" *ngSwitchWhen="3">
+                        <button (click)="toggleImages()" style="color: black; margin-bottom: 5px;">Toggle with/without Images</button>
+                        <iframe id="iframe" width="100%" height="700px" [src]="pathToPrint + '?id=' + idxtoprint + '&images=' + images.toString()" seamless="true"></iframe>
+                    </div>
+
+                    <div *ngSwitchWhen="4" style="background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
+                        <div>
+                            <h1>Enter Email</h1>
+                            <h3>Please enter the email(s) where you would like this order sent.</h3>
+                        </div>
+                        <div class="vertical layout">
+                            Partner Email: <input placeholder="Email" type="text" [(ngModel)]="email" style="width: 300px;">
+                            <!--<template repeat="{{email in emails}}">-->
+                            <input placeholder="Email" type="text" [(ngModel)]="email_0" [hidden]="emails[0]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_1" [hidden]="emails[1]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_2" [hidden]="emails[2]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_3" [hidden]="emails[3]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_4" [hidden]="emails[4]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_5" [hidden]="emails[5]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_6" [hidden]="emails[6]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_7" [hidden]="emails[7]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_8" [hidden]="emails[8]" style="width: 300px;"/>
+                            <input placeholder="Email" type="text" [(ngModel)]="email_9" [hidden]="emails[9]" style="width: 300px;"/>
+                            <!--</template>-->
+                            <br><button (click)="addEmail()">Add Another (up to 10)</button><br>
+                            <h3><button style="height: 55px;" (click)="emailOrder()">Send Email(s)</button></h3>
+                            <h3>{{emailSuccess}}</h3>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
-            <div id="2_print" *ngSwitchWhen="3">
-                <button (click)="toggleImages()" style="color: white; margin-bottom: 5px;">Toggle with/without Images</button>
-                <iframe id="iframe" width="100%" height="700px" [src]="pathToPrint + '?id=' + idxtoprint + '&images=' + images" seamless="true"></iframe>
+
+        </div>
+        <!--<div class="paper-dialog" *ngIf="viewPrintDialog"
+             style="background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
+            <div>
+                <h1 style="margin-bottom: -20px; margin-top: -15px;">Print Order</h1>
+                <h3 style="margin-bottom: 3px;">Do you want to print the order with or without images?</h3>
             </div>
+            <div>
+                <button id="withoutimages" (click)="printOrderWithout()">Without Images</button>
+                <button id="withimages" (click)="printOrderWith()">With Images</button>
+                <button id="cancelprint" (click)="cancelPrint()">Cancel</button>
+            </div>
+        </div>-->
+
+        <div class="paper-dialog" *ngIf="viewDeleteOrder"
+             style="background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
+            <div>
+                <h1 style="margin-bottom: -20px; margin-top: -15px;">Delete Order?</h1>
+                <h3 style="margin-bottom: 3px;">Are you sure you want to delete order {{orderDeleteData}}?</h3>
+                <p style="margin-bottom: 3px; color: red;">Please Note: This cannot be undone.</p>
+            </div>
+            <div>
+                <button id="deleteYes" (click)="actuallyDeleteIt()">YES</button>
+                <button id="deleteNo" (click)="doNotDeleteIt()">NO</button>
+            </div>
+
         </div>
     </div>
-
-</div>
-<div class="paper-dialog" *ngIf="viewPrintDialog"
-     style="background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
-    <div>
-        <h1 style="margin-bottom: -20px; margin-top: -15px;">Print Order</h1>
-        <h3 style="margin-bottom: 3px;">Do you want to print the order with or without images?</h3>
-    </div>
-    <div>
-        <button id="withoutimages" (click)="printOrderWithout()">Without Images</button>
-        <button id="withimages" (click)="printOrderWith()">With Images</button>
-        <button id="cancelprint" (click)="cancelPrint()">Cancel</button>
-    </div>
-</div>
-
-<div class="paper-dialog" *ngIf="viewDeleteOrder"
-     style="background-color:#7998ac; border: 5px solid #ddc77c; color: #ddc77c;">
-    <div>
-        <h1 style="margin-bottom: -20px; margin-top: -15px;">Delete Order?</h1>
-        <h3 style="margin-bottom: 3px;">Are you sure you want to delete order {{orderDeleteData}}?</h3>
-        <p style="margin-bottom: 3px; color: red;">Please Note: This cannot be undone.</p>
-    </div>
-    <div>
-        <button id="deleteYes" (click)="actuallyDeleteIt()">YES</button>
-        <button id="deleteNo" (click)="doNotDeleteIt()">NO</button>
-    </div>
-
 </div>
